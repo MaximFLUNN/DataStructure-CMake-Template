@@ -1,0 +1,1 @@
+new_app(STACK_ON_LIST_Application)

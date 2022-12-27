@@ -1,0 +1,1 @@
+new_app(ANALYZER_Application)

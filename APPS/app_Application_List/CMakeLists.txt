@@ -1,0 +1,1 @@
+new_app(LIST_Application)

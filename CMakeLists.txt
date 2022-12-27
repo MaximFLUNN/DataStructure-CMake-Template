@@ -39,6 +39,27 @@ add_subdirectory(LIBS/lib_Menu)
 add_subdirectory(LIBS/lib_Stack)
 add_subdirectory(TESTS/Tests_Stack)
 add_subdirectory(APPS/app_Application_Stack)
+add_subdirectory(LIBS/lib_Arithmetic_Analyzer)
+add_subdirectory(APPS/app_Application_Analyzer)
+add_subdirectory(TESTS/Tests_Arithmetic_Analyzer)
+
+add_subdirectory(LIBS/lib_list)
+add_subdirectory(APPS/app_Application_List)
+add_subdirectory(TESTS/Tests_List)
+add_subdirectory(LIBS/lib_Queue_on_list)
+add_subdirectory(APPS/app_Application_Queue_on_list)
+add_subdirectory(TESTS/Tests_Queue_on_list)
+add_subdirectory(LIBS/lib_Stack_on_list)
+add_subdirectory(APPS/app_Application_Stack_on_list)
+add_subdirectory(TESTS/Tests_Stack_on_list)
+
+add_subdirectory(LIBS/lib_Queue_on_list_insert)
+add_subdirectory(LIBS/lib_Queue_on_list_erase)
+add_subdirectory(APPS/app_Application_Queue_on_list_insert)
+add_subdirectory(APPS/app_Application_Queue_on_list_erase)
+add_subdirectory(TESTS/Tests_Queue_on_list_insert)
+add_subdirectory(TESTS/Tests_Queue_on_list_erase)
+
 
 
 

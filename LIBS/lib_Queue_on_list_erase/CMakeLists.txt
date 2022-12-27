@@ -1,0 +1,1 @@
+new_lib(LIB_Queue_ON_LIST_ERASE)

@@ -1,0 +1,1 @@
+new_app(QUEUE_ON_LIST_Application)

@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 #include "../../LIBS/lib_Stack/Stack.h"
-#include "../../APPS/app_Application_Stack/app.h"
+#include "../../APPS/app_Application_Stack/Stack_app.h"
 
 
 TEST(Stack_Tests, can_create_stack) {
@@ -30,6 +30,30 @@ TEST(Stack_Tests, can_correctly_push_in_stack) {
 	EXPECT_EQ(s.check(), 8);
 }
 
+TEST(Stack_Tests, can_isFull) {
+	Stack<int> s(5);
+	ASSERT_NO_THROW(s.isFull());
+}
+
+TEST(Stack_Tests, correctly_isFull) {
+	Stack<int> s(1);
+	EXPECT_EQ(s.isFull(), false);
+	s.push(1);
+	EXPECT_EQ(s.isFull(), true);
+}
+
+TEST(Stack_Tests, can_isEmpty) {
+	Stack<int> s(5);
+	ASSERT_NO_THROW(s.isFull());
+}
+
+TEST(Stack_Tests, correctly_isEmpty) {
+	Stack<int> s(1);
+	EXPECT_EQ(s.isEmpty(), true);
+	s.push(1);
+	EXPECT_EQ(s.isEmpty(), false);
+}
+
 TEST(Stack_Tests, can_pop_in_stack) {
 	Stack<int> s(5);
 	s.push(1);
@@ -44,6 +68,24 @@ TEST(Stack_Tests, correctly_pop_in_stack) {
 	EXPECT_EQ(s.isEmpty(), true);
 }
 
+TEST(Stack_Tests, can_operator_eq) {
+	Stack<int> s1(1);
+	Stack<int> s2(1);
+	s1.push(1);
+	s2.push(2);
+	ASSERT_NO_THROW(s2 = s1);
+}
+
+TEST(Stack_Tests, correctly_operator_eq) {
+	Stack<int> s1(1);
+	Stack<int> s2(1);
+	s1.push(1);
+	s2.push(2);
+	s2 = s1;
+	EXPECT_EQ(s1.check(), 1);
+	EXPECT_EQ(s2.check(), 1);
+}
+
 TEST(Stack_Tests, differient_link_data_test) {
 	Stack<int> s1(5);
 	Stack<int> s2(5);
@@ -53,6 +95,7 @@ TEST(Stack_Tests, differient_link_data_test) {
 	s2.pop();
 	EXPECT_EQ(s1.check(), 2);
 }
+
 
 TEST(Stack_Brackets_tests, five_brackets_solve_correctly) {
 	Stack a = Stack<char>(5);
@@ -80,3 +123,4 @@ TEST(Stack_Brackets_tests, no_open_start_brackets_solve_correctly) {
 	a.push('}');
 	EXPECT_EQ(solve(a, false), false);
 }
+

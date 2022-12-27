@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <ostream>
+#include <vector>
 #include "../lib_Menu/Color.h"
 
 template <class T> class Stack;
@@ -27,6 +28,22 @@ class Stack {
 		top = -1;
 	}
 
+	void set_data(int size) {
+		this->data = new T[size];
+	}
+
+	void set_size(int value) {
+		this->size = value;
+	}
+
+	void set_top(int value) {
+		this->top = value;
+	}
+
+	int get_size() {
+		return size;
+	}
+
 	// Копирование
 	Stack(const Stack& other) : data(other.data), size(other.size), top(other.top) {}
 
@@ -34,18 +51,25 @@ class Stack {
 	Stack(Stack&& other) noexcept {
 		delete[] data;
 		data = nullptr;
-		size = 0;
-		top = -1;
+		set_size(0);
+		set_top(-1);
 		swap(*this, other);
 	}
 
 	// Присваивавние
-	void operator=(Stack& other) noexcept {
-		this->data = new T[other.size];
-		this->size = other.size;
-		this->top = 0;
-		while (this->top <= other.top) {
-			this->push(other.data[this->top]);
+	void operator=(Stack& other) {
+		int s = other.get_size();
+		this->set_data(s);
+		this->set_size(s);
+		this->set_top(-1);
+		Stack<T> temp(s);
+		while (!other.isEmpty()) {
+			T element = other.pop();
+			temp.push(element);
+		}
+		while (!temp.isEmpty()) {
+			this->push(temp.check());
+			other.push(temp.pop());
 		}
 	}
 
@@ -62,17 +86,23 @@ class Stack {
 		data[top] = value;
 	}
 
+	void push(std::vector<T> arr) {
+		for (auto &elem : arr) {
+			this->push(elem);
+		}
+	}
+
 	T check() {
 		isEmpty() ? throw std::string("Stack is empty") : NULL;
 		return data[top];
 	}
 
+	int get_top() {
+		return top;
+	}
+
 	T pop() {
-		isEmpty() ? throw std::string("Stack is empty") : NULL;
-		T tmp = data[top];
-		data[top] = 0;
-		top--;
-		return tmp;
+		return isEmpty() ? throw std::string("Stack is empty") : data[top--];
 	}
 
 	bool isFull() {
@@ -83,67 +113,66 @@ class Stack {
 		return top == -1;
 	}
 
-	bool solve_brackets(bool error_graphic) {
-		std::string tmp;
-		int ss = 0;
-		for (int i = 0; i < size; i++, ss++) {
-			char t = data[i];
-			if (t == '(' || t == '{' || t == '[' || t == ')' || t == '}' || t == ']') {
-				continue;
+	bool force_solve(bool error_graphic) {  
+		Stack<T> temp(size);
+		int index = 0;
+		while (!this->isEmpty()) {
+			T element = pop();
+			if (element == '(' || element == '{' || element == '[') {
+				if (!temp.isEmpty()) {
+					T temp_element = temp.pop();
+					if (element == '(' && temp_element == ')'
+						|| element == '{' && temp_element == '}'
+						|| element == '[' && temp_element == ']'
+						) 
+					{
+						index++;
+						continue;
+					}
+					else
+					{
+						error_graphic ? draw_error_graphic(index, true, "no closed cerrectly bracket") : void();
+						throw std::logic_error("Error: no closed cerrectly bracket");
+					}
+				}
+				else {
+					error_graphic ? draw_error_graphic(index, true, "first bracket no close cerrectly") : void();
+					throw std::logic_error("Error: first bracket no close cerrectly");
+				}
+			}
+			else if (element == ')' || element == '}' || element == ']') {
+				temp.push(element);
 			}
 			else {
-				break;
+				error_graphic ? draw_error_graphic(index, true, "finded unknown symbol") : void();
+				throw std::logic_error("Error: finded unknown symbol");
 			}
+			index++;
 		}
-		ss < 1 ? throw std::logic_error("Error: brackets size < 1") : NULL;
-		(ss & 1) != 1 ? NULL : throw std::logic_error("Error: size is not a multiple of two");
-		char t = data[0];
-		if (t == ')' || t == '}' || t == ']') {
-			throw std::logic_error("Error: no open cerrectly bracket in start");
-		}
-		for (int i = 0; i < size; i++) {
-			if (!tmp.empty()) {
-				char t = tmp[tmp.length() - 1];
-				if (t == '(' && data[i] == ')' || t == '{' && data[i] == '}' || t == '[' && data[i] == ']') {
-					tmp.pop_back();
-					continue;
-				}
-				else if (data[i] == ')' || data[i] == '}' || data[i] == ']') {
-					error_graphic ? draw_error_graphic(i, false) : void();
-					throw std::logic_error("Error: no open cerrectly bracket");
-				}
-			}
-			tmp.push_back(data[i]);
+		if (!temp.isEmpty()) {
+			throw std::logic_error("Error: left closed brackets");
 		}
 		return true;
 	}
 
-	void print() {
-		int ss = 0;
-		for (int i = 0; i < size; i++, ss++) {
-			char t = data[i];
-			if (t == '(' || t == '{' || t == '[' || t == ')' || t == '}' || t == ']') {
-				continue;
-			}
-			else {
-				break;
-			}
-		}
-		std::cout << "\n" << color(azure);
-		for (int i = 0; i < ss; i++) {
-			std::cout << data[i];
-		}
-		std::cout << color();
-	}
- private:
-	 void draw_error_graphic(int pos, bool flag) {
-		 flag ? print() : void();
-		 std::cout << "\n" << (pos == 1 ? " " : "");
-		 for (int i = 0; i < pos - 1; i++) {
-			 std::cout << " ";
+	 void print() {
+		 Stack<T> temp(this->get_size());
+		 while (!this->isEmpty()) { temp.push(this->pop()); }
+		 std::cout << "\n" << color(azure);
+		 while (!temp.isEmpty()) {
+			 T element = temp.pop();
+			 std::cout << element;
+			 this->push(element);
 		 }
-		 std::cout << color(red) << "^" << color(gray_dark) << " (no open cerrectly bracket)\n";
-	}
+		 std::cout << color();
+	 }
+ private:
+	 void draw_error_graphic(int pos, bool flag, std::string error) {
+		 std::cout << '\n';
+		 int index = (this->get_top() - pos) - 1;
+		 for (int i = 0; i < index; i++) { std::cout << " "; }
+		 std::cout << color(red) << "^" << color(gray_dark) << " (" << error << ")\n";
+	 }
 };
 
 #endif  // INCLUDE_STACK_H_
