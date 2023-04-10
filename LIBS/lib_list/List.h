@@ -64,6 +64,12 @@ public:
 	}
 
 	void clearHeadAndTail() {
+		if (head == tail) {
+			delete head;
+			head = nullptr;
+			tail = nullptr;
+			return;
+		}
 		delete head;
 		delete tail;
 		head = nullptr;
@@ -146,6 +152,12 @@ public:
 
 	bool isEmpty() {
 		return head == nullptr;
+	}
+
+	void reverse() {
+		CList<T>* temp = new CList<T>();
+		for (; !isEmpty(); temp->push_front(front()->get_data()), this->pop_front());
+		(*this) = *temp;
 	}
 };
 

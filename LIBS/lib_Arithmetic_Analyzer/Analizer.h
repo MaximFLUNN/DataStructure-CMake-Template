@@ -2,6 +2,9 @@
 #ifndef INCLUDE_ANALIZER_H_
 #define INCLUDE_ANALIZER_H_
 
+#define START_NUMBERS 48
+#define END_NUMBERS 57
+
 #include <iostream>
 #include <ostream>
 #include <vector>
@@ -9,6 +12,72 @@
 #include <string>
 #include <cmath>
 #include <stack>
+
+class Node {
+public:
+	std::string m_data;
+	Node* m_left;
+	Node* m_right;
+public:
+	Node() {
+		m_left = nullptr;
+		m_right = nullptr;
+	}
+
+	Node(std::string data) {
+		m_data = data;
+		m_left = nullptr;
+		m_right = nullptr;
+	}
+	~Node() {}
+
+	//std::pair<Node*, bool> find_empty_slot_right_step() {
+	//	/*std::pair<Node*, bool> ansR;
+	//	std::pair<Node*, bool> ansL;*/
+	//	if (this->m_right == nullptr) {
+	//		return { this, true };
+	//	}
+	//	else if (this->m_right->m_data[0] <= START_NUMBERS || this->m_right->m_data[0] >= END_NUMBERS) {
+	//		return this->m_right->find_empty_slot_right_step();
+	//	}
+	//	else if ((this->m_left->m_data[0] <= START_NUMBERS || this->m_left->m_data[0] >= END_NUMBERS) && this->m_left != nullptr) {
+	//		return this->m_left->find_empty_slot_right_step();
+	//	}
+	//	return { this, false };
+	//}
+
+	bool can_add() {
+		if (this == nullptr) {
+			return true;
+		}
+		if (this->m_data[0] >= START_NUMBERS && this->m_data[0] <= END_NUMBERS) {
+			return false;
+		}
+		return (this->m_right->can_add() || this->m_left->can_add());
+	}
+
+	void insert(std::string data) {
+		if (this->m_right->can_add()) {
+			if (this->m_right == nullptr) {
+				this->m_right = new Node(data);
+			}
+			else {
+				this->m_right->insert(data);
+			}
+		}
+		else if (this->m_left->can_add()) {
+			if (this->m_left == nullptr) {
+				this->m_left = new Node(data);
+			}
+			else {
+				this->m_left->insert(data);
+			}
+		}
+	}
+
+private:
+
+};
 
 using CPS_TYPE = double;
 typedef CPS_TYPE (*FUNC) (std::string);
@@ -355,6 +424,12 @@ public:
 			CALCULATOR() {}
 			~CALCULATOR() {}
 			static CPS_TYPE calculate(std::vector<std::string> input) {
+				// start tree
+				Node tree(input[input.size() - 1]);
+				for (int i = input.size() - 2; i >= 0; i--) {
+					tree.insert(input[i]);
+				}
+				// end tree
 				replace_varialbles(input);
 				std::stack<std::string> stack;
 				std::string function_row;
